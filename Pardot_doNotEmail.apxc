@@ -1,0 +1,28 @@
+User u = [Select Id, PardotEmail__c, PardotUserKey__c,PardotPassword__c from User where Id = '005i000000396Zh'][0];
+
+String userKey = EncodingUtil.urlEncode(u.PardotUserKey__c,'UTF-8');
+String password = EncodingUtil.urlEncode(u.PardotPassword__c,'UTF-8');
+String email = EncodingUtil.urlEncode(u.PardotEmail__c,'UTF-8');
+
+// Instantiate a new http object
+    Http h = new Http();
+
+     // Instantiate a new HTTP request, specify the method (GET) as well as the endpoint
+    HttpRequest req = new HttpRequest();
+    req.setEndpoint('https://pi.pardot.com/api/login/version/3');
+    req.setBody('email=' + email + '&user_key=' + userKey + '&password=' + password);
+    req.setMethod('POST');
+
+    // Send the request, and return a response
+    HttpResponse res = h.send(req);
+    system.debug(res.getBody());
+    String msg = res.getBody();
+    msg.split('<api_key>');
+    String apiKey = msg.split('<api_key>')[1].split('</api_key>')[0];
+    system.debug(apiKey);
+
+    req.setEndpoint('https://pi.pardot.com/api/prospect/version/4/do/update/id/2950?is_do_not_email=0&user_key=' + u.PardotUserKey__c + '&api_key=' + apiKey);
+    req.setBody('');
+    req.setMethod('POST');
+    res = h.send(req);
+    system.debug(res.getBody());
