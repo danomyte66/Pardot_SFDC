@@ -1,0 +1,10 @@
+This snippet can be used to fill the form inputs with the field labels if 
+
+form = document.getElementById('pardot-form');
+        labels = document.getElementsByClassName('field-label');
+    
+        for (var i=0, iLen=labels.length; i<iLen; i++) {
+          if(document.getElementById(labels[i].htmlFor).value == '')
+            document.getElementById(labels[i].htmlFor).value = labels[i].textContent;
+        	
+        
